@@ -1,3 +1,5 @@
+import logging
+
 import requests
 import os
 
@@ -9,7 +11,12 @@ def get_server_time():
     return response
 
 
-def get_pricing_pair(pair: str):
-    param = {"pair": pair}
-    resp = requests.get(f"{EXCHANGE_URL}/public/Trades", params=param)
+def get_pricing_pair(pair: list[str], info: str = None):
+    param = {"pair": ",".join(pair)}
+    logging.error(param)
+    if info:
+        param["info"] = info
+    resp = requests.get(f"{EXCHANGE_URL}/public/AssetPairs", params=param)
     return resp
+
+
