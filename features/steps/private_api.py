@@ -16,4 +16,3 @@ def step_impl(context):
     logging.info(context.response.json())
     assert not response["error"]
     assert response["result"]["open"] == {}
-

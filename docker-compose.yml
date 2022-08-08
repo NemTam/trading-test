@@ -4,7 +4,7 @@ services:
     build: .
     volumes:
       - ./test-reports:/src/test-reports
-    command: behave -f html -o test-reports/behave-report.html
+    command: behave -f html -o test-reports/test-result.html
     environment:
       - EXCHANGE_URL
       - API_KEY
