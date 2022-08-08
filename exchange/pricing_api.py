@@ -13,7 +13,6 @@ def get_server_time():
 
 def get_pricing_pair(pair: list[str], info: str = None):
     param = {"pair": ",".join(pair)}
-    logging.error(param)
     if info:
         param["info"] = info
     resp = requests.get(f"{EXCHANGE_URL}/public/AssetPairs", params=param)

@@ -1,9 +1,11 @@
+import json
 import time
 
 from behave import given, then
 import logging
-
+from jsonschema import validate
 from exchange.pricing_api import get_server_time, get_pricing_pair
+from features.steps.schemas.public_schemas import TRADING_PAIRS, SERVER_TIME_SCHEMA
 
 
 @given('I fetch the server time')
@@ -16,20 +18,24 @@ def step_impl(context):
     assert context.response.status_code == 200
 
 
-@then('The response body is valid and contains both unix ts and rfc1123 time')
+@then('Response is valid and contains both unix ts and rfc1123 time')
 def step_impl(context):
     body = context.response.json()
     assert not body["error"]
-    local_epoch = int(time.time())
+    validate(body["result"], schema=SERVER_TIME_SCHEMA)
     server_epoch = body["result"]["unixtime"]
-    assert abs(local_epoch - server_epoch) < 5
     expected_time = time.strftime("%a, %d %b %y %H:%M:%S +0000", time.gmtime(server_epoch))
     assert expected_time == body["result"]["rfc1123"]
 
 
-@given('I fetch "{crypto}" trading pair')
-def step_impl(context, crypto):
-    context.response = get_pricing_pair([crypto])
+@given('I fetch "{crypto}" trading pair with "{param}" query param')
+def step_impl(context, crypto, param):
+    context.crypto = crypto
+    context.param = param
+    if param != "None":
+        context.response = get_pricing_pair([crypto], info=param)
+    else:
+        context.response = get_pricing_pair([crypto])
 
 
 @then('The response body is valid')
@@ -37,3 +43,7 @@ def step_impl(context):
     body = context.response.json()
     logging.info(body)
     assert not body["error"]
+    # Leverage schema was the most compact, this is just an example for schema validation for XXBTZUSD
+    # For production a more generic approach would be better
+    if getattr(context, "param", None) == "leverage" and context.crypto == "XBTUSD":
+        validate(body["result"], schema=TRADING_PAIRS[context.param])
