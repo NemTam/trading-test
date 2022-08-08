@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  test:
+    build: .
+    volumes:
+      - ./test-reports:/src/test-reports
+    command: behave -f html -o test-reports/behave-report.html
+    environment:
+      - EXCHANGE_URL
+      - API_KEY
+      - PRIVATE_KEY
+      - OTP_SEED

@@ -1,11 +1,11 @@
-import json
+import logging
 import time
 
 from behave import given, then
-import logging
 from jsonschema import validate
-from exchange.pricing_api import get_server_time, get_pricing_pair
-from features.steps.schemas.public_schemas import TRADING_PAIRS, SERVER_TIME_SCHEMA
+
+from exchange.public_api import get_server_time, get_pricing_pair
+from features.steps.schemas.public_api_schemas import TRADING_PAIRS, SERVER_TIME_SCHEMA
 
 
 @given('I fetch the server time')
@@ -43,7 +43,7 @@ def step_impl(context):
     body = context.response.json()
     logging.info(body)
     assert not body["error"]
-    # Leverage schema was the most compact, this is just an example for schema validation for XXBTZUSD
-    # For production a more generic approach would be better
+    # Leverage schema was the most compact, this is just an example schema validation for XXBTZUSD
+    # For production code I would use a more generic approach
     if getattr(context, "param", None) == "leverage" and context.crypto == "XBTUSD":
         validate(body["result"], schema=TRADING_PAIRS[context.param])
