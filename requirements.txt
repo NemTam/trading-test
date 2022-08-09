@@ -1,5 +1,5 @@
 behave
-requests
+behave-html-formatter
 jsonschema
 pyotp
-behave-html-formatter
+requests

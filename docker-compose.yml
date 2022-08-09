@@ -5,8 +5,5 @@ services:
     volumes:
       - ./test-reports:/src/test-reports
     command: behave -f html -o test-reports/test-result.html
-    environment:
-      - EXCHANGE_URL
-      - API_KEY
-      - PRIVATE_KEY
-      - OTP_SEED
+    env_file:
+      - variables.env
