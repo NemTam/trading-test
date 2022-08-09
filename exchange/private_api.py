@@ -22,8 +22,8 @@ def get_api_signature(url: str, data: dict, secret: str) -> str:
 
 def send_post_request(uri_path: str, data: dict) -> Response:
     headers = {'API-Key': API_KEY, 'API-Sign': get_api_signature(uri_path, data, PRIVATE_KEY)}
-    req = requests.post((API_URL + uri_path), headers=headers, data=data)
-    return req
+    response = requests.post((API_URL + uri_path), headers=headers, data=data)
+    return response
 
 
 def generate_otp() -> str:
@@ -34,9 +34,9 @@ def generate_otp() -> str:
 def get_open_orders(query_parameters: dict = None) -> Response:
     if not query_parameters:
         query_parameters = {}
-    resp = send_post_request('/0/private/OpenOrders', {
+    response = send_post_request('/0/private/OpenOrders', {
         "nonce": str(int(1000 * time.time())),
         "otp": generate_otp(),
         **query_parameters
     })
-    return resp
+    return response
