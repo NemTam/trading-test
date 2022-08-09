@@ -11,10 +11,10 @@ from requests.models import Response
 from exchange.constants import API_URL, API_KEY, PRIVATE_KEY, OTP_SEED
 
 
-def get_api_signature(urlpath: str, data: dict, secret: str) -> str:
+def get_api_signature(url: str, data: dict, secret: str) -> str:
     postdata = urllib.parse.urlencode(data)
     encoded = (str(data['nonce']) + postdata).encode()
-    message = urlpath.encode() + hashlib.sha256(encoded).digest()
+    message = url.encode() + hashlib.sha256(encoded).digest()
     mac = hmac.new(base64.b64decode(secret), message, hashlib.sha512)
     sigdigest = base64.b64encode(mac.digest())
     return sigdigest.decode()
@@ -31,10 +31,12 @@ def generate_otp() -> str:
     return totp.now()
 
 
-def get_open_orders() -> Response:
+def get_open_orders(query_parameters: dict = None) -> Response:
+    if not query_parameters:
+        query_parameters = {}
     resp = send_post_request('/0/private/OpenOrders', {
         "nonce": str(int(1000 * time.time())),
         "otp": generate_otp(),
-        "trades": True
+        **query_parameters
     })
     return resp

@@ -13,5 +13,5 @@ def get_pricing_pair(pair: list[str], info: str = None) -> Response:
     param = {"pair": ",".join(pair)}
     if info:
         param["info"] = info
-    resp = requests.get(f"{API_URL}/0/public/AssetPairs", params=param)
-    return resp
+    response = requests.get(f"{API_URL}/0/public/AssetPairs", params=param)
+    return response

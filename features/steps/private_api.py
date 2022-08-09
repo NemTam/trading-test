@@ -1,11 +1,11 @@
 import logging
 
-from behave import given, then
+from behave import when, then
 
 from exchange.private_api import get_open_orders
 
 
-@given('I fetch open orders')
+@when('I fetch open orders')
 def step_impl(context):
     context.response = get_open_orders()
 
